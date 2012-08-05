@@ -1,0 +1,15 @@
+<tr>
+  <td>{{ qa.question_sentence }}</td>
+  <td>
+    {% if qa.answer_type == 1 %}
+    <input class="span2 edit-field" type="text" value="{{ qa.answer }}" default-val="{{ qa.answer }}" question-id="{{ qa.question_id }}">
+    {% else %}
+    <select class="span2 edit-field" default-val="{{ qa.answer }}" question-id="{{ qa.question_id }}">
+      {% for choice in choices %}
+      <option{% if choice.selected %} selected{% endif %}>{{ choice.value }}</option>
+      {% endfor %}
+    </select>
+    {% endif %}
+  </td>
+  <td><input class="edit-field" type="text" value="{{ qa.additional_info }}" default-val="{{ qa.additional_info }}" question-id="ai{{ qa.question_id }}"></td>
+</tr>
