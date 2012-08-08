@@ -27,6 +27,37 @@ def companylist(request):
         'companies': companies,
     }, context_instance=RequestContext(request))
 
+def qalist(request):
+    cs = Company.objects.filter(deleted=False)
+    categories = []
+    for category in QUESTION_CATEGORY_CHOICES:
+        cat = {}
+        questions = Question.objects.filter(category=category[0])
+        companies = []
+        for c in cs:
+            com = {}
+            answers = []
+            for q in questions:
+                try:
+                    ans = Answer.objects.get(company=c, question=q)
+                except:
+                    ans = Answer(answer=u'未')
+                answers.append(ans)
+            com['company_name'] = c.company_name
+            com['company_id'] = c.id
+            com['answers'] = answers
+            companies.append(com)
+        cat = {
+            'display_name': category[1].split('|')[0],
+            'questions': questions,
+            'companies': companies,
+        }
+        categories.append(cat)
+
+    return render_to_response('qa_list.html', {
+        'categories': categories,
+    }, context_instance=RequestContext(request))
+
 def search(request):
     keyword = request.GET.get('keyword', '')
     companies = Company.objects.filter(

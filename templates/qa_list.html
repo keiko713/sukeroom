@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}回答一覧 | {% endblock title %}
+{% block qalist-active %}active{% endblock qalist-active %}
+
+{% block container %}
+<!-- main container -->
+<div class="container search qa-list">
+  {% for obj in categories %}
+  <div class="caption">{{ obj.display_name }}</div>
+  <div class="qa-table-scroll">
+  <table class="table table-striped search-table">
+    <thead>
+      <tr>
+        <th></th>
+        {% for q in obj.questions %}
+        <th>{{ q.question_sentence }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for company in obj.companies %}
+      <tr>
+        <td><a href="/company/{{ company.company_id }}/">{{ company.company_name }}</a></td>
+        {% for ans in company.answers %}
+        <td>{{ ans.answer }}</a>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endfor %}
+</div>
+<!-- /main container -->
+{% endblock container %}
+
+{% block custom_js %}
+<script>
+  $(function() {
+  });
+</script>
+{% endblock custom_js %}
