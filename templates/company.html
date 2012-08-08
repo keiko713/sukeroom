@@ -1,258 +1,127 @@
+{% extends "base.html" %}
 {% load room_extras %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8">
-  <title>SukeRoom</title>
-  <meta name="description" content="いろんな会社の会社情報などなど">
-  <meta name="author" content="keiko713">
-  <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Quando'>
-  <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css">
-  <link rel="stylesheet" href="{{ STATIC_URL }}css/docs.css">
-  <!--[if lt IE 9]>
-  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-</head>
-<body>
-  <!-- header -->
-  <div class="navbar navbar-fixed-top">
-    <div class="navbar-inner navtop-inner">
-      <div class="container">
-        <span class="input-append pull-right">
-          <form action="/hoge" class="search-form" id="idSearchForm" method="GET">
-            <input class="span3" id="appendedInputButton" size="16" type="text" name="keyword" placeholder="会社名など">
-            <button class="btn" type="submit">
-              <i class="icon-search"></i>
-            </button>
-          </form>
-        </span>
-        <a class="brand" href="./index.html">SukeRoom</a>
-      </div>
+
+{% block title %}{{ result.company.company_name }} | {% endblock title %}
+
+{% block container %}
+<!-- main container -->
+<div class="container company">
+  <div class="row">
+    <div class="span2">
+      <img src="{{ result.company.company_image_url }}" width="100%">
+    </div>
+    <div class="span4">
+      <h2>{{ result.company.company_name }}</h3>
+      <h4>{{ result.company.company_url }}</h4>
+      <input type="hidden" value="{{ result.company.id }}" id="cid">
+    </div>
+    <div class="span6 update">
+      <ul class="unstyled">
+        <li>{{ result.not_answer_yet }} 件の質問に未回答です</li>
+        <li>最近回答した質問:</li>
+        {% for que in result.recent_ans_questions %}
+        <li>"{{ que }}" に回答しました</li>
+        {% endfor %}
+      </ul>
     </div>
   </div>
-  <!-- /header -->
-
-  <!-- main container -->
-  <div class="container">
-    <div class="row">
-      <div class="span2">
-        <img src="https://si0.twimg.com/profile_images/2284174894/nvsduuede5x86gm7tast.png" width="100%">
-      </div>
-      <div class="span4">
-        <h2>{{ result.company.company_name }}</h3>
-        <h4>{{ result.company.company_url }}</h4>
-      </div>
-    </div>
-    {% for object in result.categories %}
-    {% if forloop.first or forloop.counter0|divisibleby:2 %}
-    <div class="row">
-    {% endif %}
-      <div class="span6">
-        <span class="pull-right edit-icons">
-          <a data-toggle="modal" href="#edit{{ object.id_name }}"><img src="{{ STATIC_URL }}img/icons/pencil.png"></a>
-          <a href="#" class="add-modal" data-category="{{ object.category_id }}" data-title="{{ object.display_name }}"><img src="{{ STATIC_URL }}img/icons/add.png"></a>
-        </span>
-        <h2>{{ object.display_name }}</h3>
-        <ul id="id{{ object.id_name }}">
-          {% for qa in object.qas %}
-          <li><strong>{{ qa.question_sentence }}</strong>: {{ qa.answer }} {% if qa.additional_info %} ({{ qa.additional_info }}) {% endif %}</li>
-          {% endfor %}
-        </ul>
-      </div>
-    {% if forloop.last or forloop.counter|divisibleby:2 %}
-    </div>
-    {% endif %}
-    {% endfor %}
-  </div>
-  <!-- /main container -->
-
-  <!-- footer -->
-  <div class="navbar navbar-fixed-bottom">
-    <div class="navbar-inner navbottom-inner">
-      <div class="container">
-        <i>このWebサイトの情報はボランティアによって編集されており、内容に保証はありません。</i>
-        <span class="input-append pull-right">
-          <img src="{{ STATIC_URL }}img/icons/Twitter.png"><img src="{{ STATIC_URL }}img/icons/Github.png">
-        </span>
-      </div>
-    </div>
-  </div>
-  <!-- /footer -->
-
-  <!-- modal edit -->
   {% for object in result.categories %}
-  <div class="modal hide" id="edit{{ object.id_name }}">
-    <div class="modal-header">
-      <button type="button" class="close close-modal">×</button>
-      <h3>編集: {{ object.display_name }}</h3>
+  {% if forloop.first or forloop.counter0|divisibleby:2 %}
+  <div class="row company-info">
+  {% endif %}
+    <div class="span6">
+      <span class="pull-right edit-icons">
+        <a data-toggle="modal" href="#edit{{ object.id_name }}"><img src="{{ STATIC_URL }}img/icons/pencil.png"></a>
+        <a href="#" class="add-modal" data-category="{{ object.category_id }}" data-title="{{ object.display_name }}"><img src="{{ STATIC_URL }}img/icons/add.png"></a>
+      </span>
+      <h2>{{ object.display_name }}</h3>
+      <ul id="id{{ object.id_name }}">
+        {% for qa in object.qas %}
+        <li><strong>{{ qa.question_sentence }}</strong>: {% if qa.answer %}{{ qa.answer }}{% else %}未回答{% endif %} {% if qa.additional_info %} ({{ qa.additional_info }}) {% endif %}</li>
+        {% endfor %}
+      </ul>
     </div>
-    <form style="margin: 0;">
-    <div class="modal-body">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>項目名</th>
-            <th>項目値</th>
-            <th>補足 (オプション)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for qa in object.qas %}
-            {% print_value qa %}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="modal-footer">
-      <a href="#" class="btn close-modal">キャンセル</a>
-      <a href="#" class="btn btn-primary edit-submit">変更を保存</a>
-    </div>
-  </form>
+  {% if forloop.last or forloop.counter|divisibleby:2 %}
   </div>
+  {% endif %}
   {% endfor %}
-  <!-- /modal edit -->
+</div>
+<!-- /main container -->
 
-  <!-- modal addnew -->
-  {% for object in result.categories %}
-  <div class="modal hide" id="addnew">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal">×</button>
-      <h3 id="addTitle">追加: {{ object.display_name }}</h3>
-    </div>
-    <div class="modal-body">
-      <form class="form-horizontal">
-        <fieldset>
-          <div class="control-group">
-            <label class="control-label" for="itemName">項目名</label>
-            <div class="controls">
-              <input type="text" class="input-xlarge" id="itemName" required>
-              <p class="help-block">要否や可否、有無などは項目名に付けないようにしてください。</p>
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="itemType">項目値</label>
-            <div class="controls">
-              <select id="itemType">
-                <option value="1" selected>インプットボックス</option>
-                <option value="2">可/不可セレクトボックス</option>
-                <option value="3">有/無セレクトボックス</option>
-                <option value="4">必須/推奨/不要セレクトボックス</option>
-              </select>
-            </div>
-          </div>
-        </fieldset>
-        <input type="hidden" id="category" value="">
-      </form>
-    </div>
-    <div class="modal-footer">
-      <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
-      <a href="#" class="btn btn-primary add-submit">追加</a>
-    </div>
+<!-- modal edit -->
+{% for object in result.categories %}
+<div class="modal hide" id="edit{{ object.id_name }}">
+  <div class="modal-header">
+    <button type="button" class="close close-modal">×</button>
+    <h3>編集: {{ object.display_name }}</h3>
   </div>
-  {% endfor %}
-  <!-- /modal addnew -->
+  <form style="margin: 0;">
+  <div class="modal-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>項目名</th>
+          <th>項目値</th>
+          <th>補足 (オプション)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for qa in object.qas %}
+          {% print_value qa %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn close-modal">キャンセル</a>
+    <a href="#" class="btn btn-primary edit-submit">変更を保存</a>
+  </div>
+</form>
+</div>
+{% endfor %}
+<!-- /modal edit -->
 
-  <script src="../static/js/jquery-1.7.2.min.js"></script>
-  <script src="../static/js/bootstrap-modal.js"></script>
-  <script>
-    var editChanged = false;
-    var changedNodes = {};
-    function resetChanges() {
-      for (var idx in changedNodes) {
-        var node = changedNodes[idx];
-        $(node).val($(node).attr('default-val'));
-        delete changedNodes[idx];
-      }
-    }
+<!-- modal addnew -->
+<div class="modal hide" id="addnew">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3 id="addTitle">追加:</h3>
+  </div>
+  <div class="modal-body">
+    <form class="form-horizontal">
+      <fieldset>
+        <div class="control-group">
+          <label class="control-label" for="itemName">項目名</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" id="itemName" required>
+            <p class="help-block">要否や可否、有無などは項目名に付けないようにしてください。</p>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="itemType">項目値</label>
+          <div class="controls">
+            <select id="itemType">
+              <option value="1" selected>インプットボックス</option>
+              <option value="2">可/不可セレクトボックス</option>
+              <option value="3">有/無セレクトボックス</option>
+              <option value="4">必須/推奨/不要セレクトボックス</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+      <input type="hidden" id="category" value="">
+    </form>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
+    <a href="#" class="btn btn-primary add-submit">追加</a>
+  </div>
+</div>
+<!-- /modal addnew -->
+{% endblock container %}
 
-    $(function() {
-      $('.edit-field').change(function() {
-        var def = $(this).attr('default-val');
-        var val = $(this).val();
-        if (def !== val) {
-          editChanged = true;
-          changedNodes[$(this).attr('question-id')] = $(this);
-        } else {
-          delete changedNodes[$(this).attr('question-id')];
-          editChanged = false;
-        }
-      });
-      $('.close-modal').click(function() {
-        if (editChanged) {
-          if (confirm('変更があります。変更を破棄してもいいですか？')) {
-            resetChanges();
-            editChanged = false;
-            $(this).parents('.modal').modal('hide');
-          }
-        } else {
-          $(this).parents('.modal').modal('hide');
-        }
-      });
-      $('.edit-submit').click(function() {
-        var parentModal = $(this).parents('.modal');
-        if ($.isEmptyObject(changedNodes)) {
-          alert('何も変更されていません。');
-        } else {
-          var ns = [];
-          for (var idx in changedNodes) {
-            ns.push({qid: idx, value: $(changedNodes[idx]).val()});
-          }
-          nodes = {nodes: ns}
-          $.ajax({
-            url: "/api/company/edit/",
-            dataType: "json",
-            type: "POST",
-            data: {company_id: {{ result.company.id }}, change_nodes: JSON.stringify(nodes)},
-          }).done(function(data) {
-            alert(data.msg);
-            resetChanges();
-            parentModal.modal('hide');
-          });
-        }
-      });
-
-      $('.add-modal').click(function() {
-        // refresh the input filed of add modal screen
-        $('#itemName').val('');
-        $('#itemType').val(1);
-
-        $('#category').val($(this).attr('data-category'));
-        $('#addTitle').html($(this).attr('data-title'));
-        $('#addnew').modal('show');
-      });
-      $('.add-submit').click(function() {
-        var aType = $('#itemType').val();
-        var qSentence = $('#itemName').val();
-        var category = $('#category').val();
-        if (aType && qSentence && category) {
-          $.ajax({
-            url: "/api/question/add/",
-            dataType: "json",
-            type: "POST",
-            data: {category: category, answer_type: aType, question_sentence: qSentence},
-          }).done(function(data) {
-            alert(data.msg);
-            $('#addnew').modal('hide');
-          });
-        } else {
-          alert('項目はすべて必須です。');
-        }
-      });
-    });
-    /*
-    $(function() {
-      $.ajax({
-        url: "data.json",
-        cache: false,
-        dataType: "json",
-        success: function(data) {
-          var source = $("#mailNetworkTemplate").html();
-          var template = Handlebars.compile(source);
-          var html = template(data);
-          console.log(html);
-        }
-      });
-    });*/
-  </script>
-</body>
-</html>
+{% block custom_js %}
+<script src="{{ STATIC_URL }}js/bootstrap-modal.js"></script>
+<script src="{{ STATIC_URL }}js/company.js"></script>
+<script src="{{ STATIC_URL }}js/notification.js"></script>
+{% endblock custom_js %}

@@ -5,29 +5,97 @@ body {
   margin-bottom: 80px;
   color: #eee;
 }
+@media (max-width: 979px) {
+  body {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+  .navbar-fixed-top .navbar-inner, .navbar-fixed-bottom .navbar-inner {
+    padding: 0px;
+  }
+}
 
+/*-- navtop --*/
 .navtop-inner {
   min-height: 50px;
   background-image: url('../img/navbg.png');
   background-color: #333;
 }
-
 .navbar .brand {
   font-size: 24px;
   padding: 11px 20px 15px;
   font-family: 'Quando', serif;
 }
 
-.navbottom-inner {
-  min-height: 50px;
-  background-color: #7EBA03;
-  background-image: none;
-  filter: none;
-  -webkit-box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(0, 0, 0, 0.1);
-     -moz-box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(0, 0, 0, 0.1);
-          box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(0, 0, 0, 0.1);
+/*-- index --*/
+.toppage .span6 {
+  background-color: none;
+  color: #eee;
+}
+.index-title {
+  padding-top: 50px;
+  font-family: 'Quando';
+  font-size: 70px;
+  font-weight: normal;
+  border-bottom: 1px dashed;
+  line-height: 1;
+  text-align: center;
+}
+.index-tagline {
+  padding-top: 30px;
+  font-family: 'Quando';
+  font-size: 18px;
+  text-align: center;
 }
 
+/*-- search --*/
+.search .row {
+  margin-bottom: 20px;
+}
+.search .span4 {
+  background-color: #eee;
+  color: #333;
+}
+.search h4 {
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+.search a {
+  color: #333;
+}
+.search-url {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-top: 1px dotted #bbb;
+  border-bottom: 1px dotted #bbb;
+  margin: 0px;
+}
+.search img {
+  float: left;
+  padding-right: 10px;
+}
+
+/*-- add company --*/
+.add-company {
+}
+.add-company .help-block {
+  color: #bbb;
+}
+.add-company .form-actions {
+  background-color: transparent;
+}
+
+/*-- company --*/
+.update {
+  background-color: #eee;
+  opacity: 0.5;
+  color: #333;
+  min-height: 140px;
+}
+.update ul {
+  padding-top: 15px;
+  padding-left: 15px;
+}
 .input-append {
   margin-bottom: 0px;
 }
@@ -44,14 +112,14 @@ body {
 .search-form .btn {
   margin: 0 0 0 -5px;
 }
-.row {
+.company .row {
   margin-bottom: 20px;
 }
-.span6, .span12 {
+.company-info .span6 {
   background-color: #eee;
   color: #333;
 }
-.span6 h2, .span12 h2 {
+.company-info h2 {
   padding: 5px 0 5px 10px;
   margin-bottom: 10px;
   background-color: #7EBA03;
@@ -62,8 +130,8 @@ body {
      -moz-box-shadow: 0 1px 3px #222;
           box-shadow: 0 1px 3px #222;
 }
-.span6 ul, .span12 ul {
-  padding: 10px;
+.company-info ul {
+  padding: 10px
 }
 .edit-icons {
   padding-top: 8px;
@@ -75,6 +143,7 @@ body {
   padding-left: 5px;
 }
 
+/*-- company modal --*/
 .modal-header {
   background-color: #7EBA03;
   -webkit-border-radius: 3px 3px 0 0;
@@ -87,10 +156,41 @@ body {
 .modal-body {
   color: #333;
 }
+
+/*-- notification --*/
+.notification {
+  top: 50px;
+  position: fixed;
+  background-color: #BEDC81;
+  right: 0;
+  padding: 10px;
+  opacity: 0.7;
+  text-align: center;
+  cursor: pointer;
+}
+.notify-text {
+  color: #5B8602;
+}
+
+/*-- navbottom --*/
+.navbottom-inner {
+  min-height: 40px;
+  background-color: #7EBA03;
+  background-image: none;
+  filter: none;
+  -webkit-box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(0, 0, 0, 0.1);
+     -moz-box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(0, 0, 0, 0.1);
+          box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(0, 0, 0, 0.1);
+}
 .navbar-fixed-bottom i {
   color: #eee;
-  line-height: 50px;
+  line-height: 40px;
 }
+.navbar-fixed-bottom img {
+  height: 40px;
+  width: 40px;
+}
+
 /*
 COLOR
 #F3F9E8

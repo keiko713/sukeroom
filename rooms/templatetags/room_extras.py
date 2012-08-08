@@ -22,6 +22,12 @@ def print_value(qa):
         # 必須/推奨/不要/-
         cs = [u'必須', u'推奨', u'不要', u'-']
     for c in cs:
-        choices.append({'value': c, 'selected': True if qa['answer'] == c else False})
+        selected = False
+        if qa['answer'] == c:
+            selected = True
+        else:
+            if not qa['answer'] and c == u'-':
+                selected = True
+        choices.append({'value': c, 'selected': selected})
 
     return {'qa': qa, 'choices': choices}

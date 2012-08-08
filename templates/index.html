@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load room_extras %}
+
+{% block title %}{% endblock title %}
+
+{% block container %}
+<!-- main container -->
+<div class="container" style="padding-top: 70px;">
+  <div class="row toppage">
+    <div class="span6">
+      <h1 class="index-title">SukeRoom</h1>
+      <p class="index-tagline">View and Edit Company's Information</p>
+      <p class="index-tagline">会社ホームページには載っていない...けど知りたい！<br>そんな会社情報を集めるサイト</p>
+    </div>
+    <div class="span6">
+      <img src="{{ STATIC_URL }}img/top2.png" width="100%">
+    </div>
+</div>
+<!-- /main container -->
+{% endblock container %}
+
+{% block custom_js %}
+<script src="{{ STATIC_URL }}js/bootstrap-modal.js"></script>
+{% endblock custom_js %}

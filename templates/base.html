@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}{% endblock title %}SukeRoom</title>
+  <meta name="description" content="いろんな会社の会社情報などなど">
+  <meta name="author" content="keiko713">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Quando'>
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-responsive.min.css">
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/docs.css">
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <!-- header -->
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner navtop-inner">
+      <div class="container">
+        <span class="input-append pull-right">
+          <form action="/search/" class="search-form" id="idSearchForm" method="GET">
+            <input class="span3" id="appendedInputButton" size="16" type="text" name="keyword" placeholder="会社名など">
+            <button class="btn" type="submit">
+              <i class="icon-search"></i>
+            </button>
+          </form>
+        </span>
+        <a class="brand" href="/">SukeRoom</a>
+        <ul class="nav">
+          <li><a href="/addcompany/">会社追加</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- /header -->
+
+  <!-- main container -->
+  {% block container %}
+  {% endblock container %}
+  <!-- /main container -->
+
+  <!-- footer -->
+  <div class="navbar navbar-fixed-bottom">
+    <div class="navbar-inner navbottom-inner">
+      <div class="container">
+        <i>このWebサイトの情報はボランティアによって編集されており、内容に保証はありません。</i>
+        <span class="input-append pull-right">
+          <img src="{{ STATIC_URL }}img/icons/Twitter.png"><img src="{{ STATIC_URL }}img/icons/Github.png">
+        </span>
+      </div>
+    </div>
+  </div>
+  <!-- /footer -->
+
+  <script src="{{ STATIC_URL}}js/jquery-1.7.2.min.js"></script>
+  {% block custom_js %}
+  {% endblock custom_js %}
+</body>
+</html>

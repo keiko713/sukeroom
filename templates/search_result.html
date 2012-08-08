@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}検索結果 | {% endblock title %}
+
+{% block container %}
+<!-- main container -->
+<div class="container search">
+  <div class="row">
+    <div class="span12">
+      "{{ keyword }}" の検索結果... {{ companies|length }} 件
+    </div>
+  </div>
+  {% for company in companies %}
+  {% if forloop.first or forloop.counter0|divisibleby:3 %}
+  <div class="row">
+  {% endif %}
+    <div class="span4">
+      <img src="{{ company.company_image_url }}" width="100">
+      <h4><a href="/company/{{ company.id }}/">{{ company.company_name }}</a></h4>
+      <p class="search-url"><a href="{{ company.company_url }}" target="blank">{{ company.company_url }} <i class="icon-share"></i></a></p>
+    </div>
+  {% if forloop.last or forloop.counter|divisibleby:3 %}
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+<!-- /main container -->
+{% endblock container %}
+
+{% block custom_js %}
+{% endblock custom_js %}

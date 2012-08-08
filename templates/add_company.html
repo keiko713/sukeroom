@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}会社追加 | {% endblock title %}
+
+{% block container %}
+<!-- main container -->
+<div class="container">
+  <div class="row">
+    <div class="span3">
+      <h3>会社追加</h3>
+      <p>新しく会社を追加します</p>
+    </div>
+    <div class="span9 add-company">
+      <div class="alert hide" id="message">
+        <button class="close" data-dismiss="alert">×</button>
+        <span id="message-text">メッセージ</span>
+      </div>
+      <form class="form-horizontal" id="addForm">
+        <fieldset>
+          <div class="control-group">
+            <label class="control-label" for="companyName">会社名</label>
+            <div class="controls">
+              <input type="text" class="input-xlarge required" id="companyName" required>
+              <p class="help-block"></p>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="companyUrl">会社ホームページURL</label>
+            <div class="controls">
+              <input type="text" class="input-xlarge required" id="companyUrl" required>
+              <p class="help-block"></p>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="companyImg">会社ロゴ画像URL<br>(オプション)</label>
+            <div class="controls">
+              <input type="text" class="input-xlarge" id="companyImg">
+              <p class="help-block">なるべく小さめ (幅 150px 程度) の正方形に近いロゴを選んでください。</p>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="companyDesc">会社の説明<br>(オプション)</label>
+            <div class="controls">
+              <textarea class="input-xlarge" id="companyDesc"></textarea>
+              <p class="help-block">会社に関しての補足説明があれば付け足してください。</p>
+            </div>
+          </div>
+          <div class="form-actions">
+            <a href="#" class="btn btn-primary" id="addButton">追加</a>
+            <button type="reset" class="btn" id="cancelButton">リセット</button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- /main container -->
+{% endblock container %}
+
+{% block custom_js %}
+<script src="{{ STATIC_URL }}js/bootstrap-alert.js"></script>
+<script>
+  function resetForm() {
+    $('#companyName').val('');
+    $('#companyUrl').val('');
+    $('#companyImg').val('');
+    $('#companyDesc').val('');
+    $('#companyName').parents('.control-group').removeClass('error');
+    $('#companyUrl').parents('.control-group').removeClass('error');
+    $('#message').hide();
+  }
+  $(function() {
+    $('#addButton').click(function() {
+      var companyName = $('#companyName').val();
+      var companyUrl = $('#companyUrl').val();
+      var companyImg = $('#companyImg').val();
+      var companyDesc = $('#companyDesc').val();
+      if (companyName && companyUrl) {
+        $.ajax({
+          url: "/api/company/add/",
+          dataType: "json",
+          type: "POST",
+          data: {
+            company_name: companyName,
+            company_url: companyUrl,
+            company_image_url: companyImg,
+            company_description: companyDesc
+          },
+        }).done(function() {
+          resetForm();
+          $('#message-text').html('正常に追加されました。');
+          $('#message').addClass('alert-info');
+          $('#message').show();
+        }).fail(function() {
+          $('#message-text').html('サーバー側でエラーが発生しました。しばらくしてからもう一度試してください。');
+          $('#message').removeClass('alert-info');
+          $('#message').show();
+        });
+      } else {
+        $('#message-text').html('会社名と会社ホームページURLは必須です。');
+        if (!companyName) {
+          $('#companyName').parents('.control-group').addClass('error');
+        } else {
+          $('#companyName').parents('.control-group').removeClass('error');
+        }
+        if (!companyUrl) {
+          $('#companyUrl').parents('.control-group').addClass('error');
+        } else {
+          $('#companyUrl').parents('.control-group').removeClass('error');
+        }
+        $('#message').removeClass('alert-info');
+        $('#message').show();
+      }
+    });
+  });
+</script>
+{% endblock custom_js %}
