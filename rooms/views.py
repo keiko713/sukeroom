@@ -21,6 +21,12 @@ def index(request):
     return render_to_response('index.html', {
     }, context_instance=RequestContext(request))
 
+def companylist(request):
+    companies = Company.objects.filter(deleted=False)
+    return render_to_response('company_list.html', {
+        'companies': companies,
+    }, context_instance=RequestContext(request))
+
 def search(request):
     keyword = request.GET.get('keyword', '')
     companies = Company.objects.filter(
@@ -33,6 +39,16 @@ def search(request):
 
 def addcompany(request):
     return render_to_response('add_company.html', {
+    }, context_instance=RequestContext(request))
+
+def editcompany(request, company_id):
+    try:
+        company = Company.objects.get(pk=company_id, deleted=False)
+    except Company.DoesNotExist:
+        raise Http404
+
+    return render_to_response('edit_company.html', {
+        'company': company,
     }, context_instance=RequestContext(request))
 
 def company(request, company_id):
@@ -92,7 +108,7 @@ def company(request, company_id):
     }, context_instance=RequestContext(request))
 
 @csrf_exempt
-def company_edit(request):
+def answer_edit(request):
     change_nodes = request.POST.get('change_nodes', False)
     cid = request.POST.get('company_id', False)
     if not change_nodes or not cid:
@@ -181,5 +197,28 @@ def company_add(request):
         company.save()
         data = json.dumps({})
         return json_response(data)
+    except Exception:
+        return HttpResponseServerError(minetype='application/json')
+
+@csrf_exempt
+def company_edit(request):
+    company_id = request.POST.get('company_id', False)
+    company_name = request.POST.get('company_name', False)
+    company_url = request.POST.get('company_url', False)
+    company_image_url = request.POST.get('company_image_url', '')
+    company_description = request.POST.get('company_description', '')
+    if not company_id or not company_name or not company_url:
+        return HttpResponseBadRequest(minetype='application/json')
+    try:
+        company = Company.objects.get(pk=company_id, deleted=False)
+        company.company_name=company_name
+        company.company_url=company_url
+        company.company_image_url=company_image_url
+        company.company_description=company_description
+        company.save()
+        data = json.dumps({})
+        return json_response(data)
+    except Company.DoesNotExist:
+        return HttpResponseBadRequest(minetype='application/json')
     except Exception:
         return HttpResponseServerError(minetype='application/json')

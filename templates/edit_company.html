@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}会社追加 | {% endblock title %}
-{% block addcompany-active %}active{% endblock %}
+{% block title %}会社編集 | {% endblock title %}
+{% block addcompany-active %}{% endblock %}
 {% block container %}
 <!-- main container -->
 <div class="container">
   <div class="row">
     <div class="span3">
-      <h3>会社追加</h3>
-      <p>新しく会社を追加します</p>
+      <h3>会社編集</h3>
+      <p>会社情報を編集します</p>
     </div>
     <div class="span9 add-company">
       <div class="alert hide" id="message">
@@ -20,33 +20,34 @@
           <div class="control-group">
             <label class="control-label" for="companyName">会社名</label>
             <div class="controls">
-              <input type="text" class="input-xlarge required" id="companyName" required>
+              <input type="text" class="input-xlarge required" id="companyName" value="{{ company.company_name }}" required>
               <p class="help-block"></p>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label" for="companyUrl">会社ホームページURL</label>
             <div class="controls">
-              <input type="text" class="input-xlarge required" id="companyUrl" required>
+              <input type="text" class="input-xlarge required" id="companyUrl" value="{{ company.company_url }}" required>
               <p class="help-block"></p>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label" for="companyImg">会社ロゴ画像URL<br>(オプション)</label>
             <div class="controls">
-              <input type="text" class="input-xlarge" id="companyImg">
+              <input type="text" class="input-xlarge" id="companyImg" value="{{ company.company_image_url}}">
               <p class="help-block">なるべく小さめ (幅 150px 程度) の正方形に近いロゴを選んでください。会社Twitterアカウントがある場合は、その画像を推奨。</p>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label" for="companyDesc">会社の説明<br>(オプション)</label>
             <div class="controls">
-              <textarea class="input-xlarge" id="companyDesc"></textarea>
+              <textarea class="input-xlarge" id="companyDesc" value="{{ company.company_description }}"></textarea>
               <p class="help-block">会社に関しての補足説明があれば付け足してください。</p>
             </div>
           </div>
+          <input type="hidden" id="companyId" value="{{ company.id }}">
           <div class="form-actions">
-            <a href="#" class="btn btn-primary" id="addButton">追加</a>
+            <a href="#" class="btn btn-primary" id="addButton">編集</a>
             <button type="reset" class="btn" id="cancelButton">リセット</button>
           </div>
         </fieldset>
@@ -71,16 +72,18 @@
   }
   $(function() {
     $('#addButton').click(function() {
+      var companyId = $('#companyId').val();
       var companyName = $('#companyName').val();
       var companyUrl = $('#companyUrl').val();
       var companyImg = $('#companyImg').val();
       var companyDesc = $('#companyDesc').val();
       if (companyName && companyUrl) {
         $.ajax({
-          url: "/api/company/add/",
+          url: "/api/company/edit/",
           dataType: "json",
           type: "POST",
           data: {
+            company_id: companyId,
             company_name: companyName,
             company_url: companyUrl,
             company_image_url: companyImg,
@@ -88,7 +91,7 @@
           },
         }).done(function() {
           resetForm();
-          $('#message-text').html('正常に追加されました。');
+          $('#message-text').html('正常に編集されました。');
           $('#message').addClass('alert-info');
           $('#message').show();
         }).fail(function() {

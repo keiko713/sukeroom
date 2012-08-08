@@ -1,15 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}検索結果 | {% endblock title %}
+{% block title %}会社一覧 | {% endblock title %}
+{% block companylist-active %}active{% endblock companylist-active %}
 
 {% block container %}
 <!-- main container -->
 <div class="container search">
-  <div class="row">
-    <div class="span12">
-      "{{ keyword }}" の検索結果... {{ companies|length }} 件
-    </div>
-  </div>
   <table class="table table-striped search-table">
     <thead>
       <tr>
@@ -33,8 +29,4 @@
 {% endblock container %}
 
 {% block custom_js %}
-<script>
-  $(function() {
-  });
-</script>
 {% endblock custom_js %}

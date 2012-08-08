@@ -9,6 +9,8 @@ function resetChanges() {
 }
 
 $(function() {
+  /* activate tooltip */
+  $('a[rel=tooltip]').tooltip();
   /* edit answer */
   $('.edit-field').change(function() {
     var def = $(this).attr('default-val');
@@ -44,7 +46,7 @@ $(function() {
       nodes = {nodes: ns}
       var companyId = $('#cid').val();
       $.ajax({
-        url: "/api/company/edit/",
+        url: "/api/answer/edit/",
         dataType: "json",
         type: "POST",
         data: {company_id: companyId, change_nodes: JSON.stringify(nodes)},

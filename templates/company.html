@@ -8,11 +8,14 @@
 <div class="container company">
   <div class="row">
     <div class="span2">
-      <img src="{{ result.company.company_image_url }}" width="100%">
+      <a href="/company/{{ result.company.id }}/">
+        <img src="{{ result.company.company_image_url }}" class="company-img">
+      </a>
     </div>
     <div class="span4">
-      <h2>{{ result.company.company_name }}</h3>
-      <h4>{{ result.company.company_url }}</h4>
+      <h2><a href="/company/{{ result.company.id }}/">{{ result.company.company_name }}</a><a href="/editcompany/{{ result.company.id }}/" rel="tooltip" title="会社情報を編集"><img src="{{ STATIC_URL }}img/icons/pencil.png" class="company-edit"></a></h3>
+      <h4><a href="{{ result.company.company_url }}" target="blank">{{ result.company.company_url }} <i class="icon-share icon-white"></i></a></h4>
+      <p>{{ result.company.company_description }}</p>
       <input type="hidden" value="{{ result.company.id }}" id="cid">
     </div>
     <div class="span6 update">
@@ -31,8 +34,8 @@
   {% endif %}
     <div class="span6">
       <span class="pull-right edit-icons">
-        <a data-toggle="modal" href="#edit{{ object.id_name }}"><img src="{{ STATIC_URL }}img/icons/pencil.png"></a>
-        <a href="#" class="add-modal" data-category="{{ object.category_id }}" data-title="{{ object.display_name }}"><img src="{{ STATIC_URL }}img/icons/add.png"></a>
+        <a data-toggle="modal" href="#edit{{ object.id_name }}" rel="tooltip" title="このカテゴリの回答を編集"><img src="{{ STATIC_URL }}img/icons/pencil.png"></a>
+        <a href="#" class="add-modal" data-category="{{ object.category_id }}" data-title="{{ object.display_name }}" rel="tooltip" title="このカテゴリに新しい質問を追加"><img src="{{ STATIC_URL }}img/icons/add.png"></a>
       </span>
       <h2>{{ object.display_name }}</h3>
       <ul id="id{{ object.id_name }}">
@@ -122,6 +125,6 @@
 
 {% block custom_js %}
 <script src="{{ STATIC_URL }}js/bootstrap-modal.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-tooltip.js"></script>
 <script src="{{ STATIC_URL }}js/company.js"></script>
-<script src="{{ STATIC_URL }}js/notification.js"></script>
 {% endblock custom_js %}

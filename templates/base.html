@@ -21,7 +21,7 @@
       <div class="container">
         <span class="input-append pull-right">
           <form action="/search/" class="search-form" id="idSearchForm" method="GET">
-            <input class="span3" id="appendedInputButton" size="16" type="text" name="keyword" placeholder="会社名など">
+            <input class="span3" id="appendedInputButton" size="16" type="text" name="keyword" placeholder="会社名などから検索">
             <button class="btn" type="submit">
               <i class="icon-search"></i>
             </button>
@@ -29,7 +29,8 @@
         </span>
         <a class="brand" href="/">SukeRoom</a>
         <ul class="nav">
-          <li><a href="/addcompany/">会社追加</a></li>
+          <li class="{% block companylist-active %}{% endblock %}"><a href="/companylist/">会社一覧</a></li>
+          <li class="{% block addcompany-active %}{% endblock %}"><a href="/addcompany/">会社追加</a></li>
         </ul>
       </div>
     </div>
