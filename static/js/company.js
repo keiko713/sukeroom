@@ -51,8 +51,7 @@ $(function() {
         type: "POST",
         data: {company_id: companyId, change_nodes: JSON.stringify(nodes)},
       }).done(function() {
-        resetChanges();
-        location.reload();
+        setTimeout(function() {location.reload();}, 0);
       }).fail(function() {
         alert('サーバー側でエラーが発生しました。しばらくしてからもう一度試してください。');
         parentModal.modal('hide');

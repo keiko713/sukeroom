@@ -13,8 +13,8 @@ def print_value(qa):
     choices = []
     cs = []
     if qa['answer_type'] == 2:
-        # 可/不可/-
-        cs = [u'可', u'不可', u'-']
+        # 可/制限付可/不可/-
+        cs = [u'可', u'制限付可', u'不可', u'-']
     elif qa['answer_type'] == 3:
         # 有/無/-
         cs = [u'有', u'無', u'-']
