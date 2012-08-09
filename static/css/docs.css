@@ -68,6 +68,43 @@ body {
   overflow: auto;
 }
 
+/*-- statistics --*/
+.statistics ul {
+  list-style-type: none;
+}
+.statistics li.selected {
+  background-color: #777;
+}
+.statistics li {
+  line-height: 1;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+.statistics li:nth-child(1) {
+  border-top: 1px solid #ddd;
+}
+#graphcanvas {
+  min-height: 400px;
+}
+.flotr-labels a {
+  color: #eee;
+}
+.statistics-header h4 {
+  padding: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+  background-color: #777;
+  opacity: 0.8;
+}
+.statistics-header {
+  margin-bottom: 15px;
+}
+.choice-field label {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
 /*-- search --*/
 .search .row {
   margin-bottom: 20px;

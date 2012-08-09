@@ -6,10 +6,10 @@ from django.http import HttpResponseBadRequest, HttpResponseServerError
 from django.conf import settings
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Q
+from django.db.models import Q, Count
 from rooms.models import Company, Question, Answer
 from rooms.models import QUESTION_CATEGORY_CHOICES
-import json
+import json, traceback, sys
 
 
 def json_response(data, code=200, mimetype='application/json'):
@@ -57,6 +57,75 @@ def qalist(request):
     return render_to_response('qa_list.html', {
         'categories': categories,
     }, context_instance=RequestContext(request))
+
+
+def get_category_display_name(category_id):
+    for category in QUESTION_CATEGORY_CHOICES:
+        if category[0] == category_id:
+            return category[1].split('|')[0]
+    return ''
+
+def statistics(request):
+    # graph1 response rate per company
+    cs = Company.objects.filter(deleted=False)
+    ques_count = Question.objects.all().count()
+    companies = {}
+    for c in cs:
+        ans_count = Answer.objects.filter(company=c).count()
+        persent = '%1.2f' % (float(ans_count)/ques_count)
+        companies[persent] = c
+    graph1 = []
+    for k in sorted(companies.keys(), reverse=True):
+        graph1.append({
+            'persent': k,
+            'name': companies[k].company_name,
+            'id': companies[k].id
+        })
+
+    # graph2 response rate per answer
+    qs = Question.objects.all()
+    comp_count = Company.objects.filter(deleted=False).count()
+    questions = {}
+    for q in qs:
+        ans_count = Answer.objects.filter(question=q).count()
+        persent = '%1.2f' % (float(ans_count)/comp_count)
+        questions[persent] = q
+    graph2 = []
+    for k in sorted(questions.keys(), reverse=True):
+        graph2.append({
+            'persent': k,
+            'category': get_category_display_name(questions[k].category),
+            'sentence': questions[k].question_sentence,
+        })
+
+    # generate categorised question
+    question_list = {}
+    for q in qs:
+        if not question_list.get(q.category):
+            question_list[q.category] = []
+        question_list[q.category].append(q)
+
+    return render_to_response('statistics.html', {
+        'graph1': graph1[:10],
+        'graph2': graph2[:10],
+        'question_list': question_list,
+    }, context_instance=RequestContext(request))
+
+
+def piedata(request, question_id):
+    try:
+        q = Question.objects.get(pk=question_id)
+        result = Answer.objects.filter(question=q).values("answer").annotate(Count("id")).order_by()
+        data = []
+        for r in result:
+            data.append({'answer': r['answer'], 'id': r['id__count']})
+        return json_response(json.dumps(data))
+    except Exception:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print repr(traceback.format_exception(
+            exc_type, exc_value, exc_traceback))
+        return HttpResponseServerError(mimetype='application/json')
+
 
 def search(request):
     keyword = request.GET.get('keyword', '')
