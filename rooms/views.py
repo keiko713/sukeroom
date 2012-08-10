@@ -31,28 +31,53 @@ def qalist(request):
     cs = Company.objects.filter(deleted=False)
     categories = []
     for category in QUESTION_CATEGORY_CHOICES:
+        # create a chunk of answers for each category
         cat = {}
-        questions = Question.objects.filter(category=category[0])
-        companies = []
+        questions = Question.objects.filter(category=category[0]).order_by('id')
+        # if there are more than 13 questions, separate question into 2
+        q2 = True if len(questions) > 13 else False
+        companies_q1 = []
+        companies_q2 = []
         for c in cs:
-            com = {}
             answers = []
+            ans_list = Answer.objects.filter(company=c, question__category=category[0]).order_by('question__id')
+            ans_idx = 0
             for q in questions:
-                try:
-                    ans = Answer.objects.get(company=c, question=q)
-                except:
+                if ans_idx == len(ans_list) or not (q.id == ans_list[ans_idx].question.id):
+                    # if there is no answer, set 未(means 未回答) to answer
                     ans = Answer(answer=u'未')
+                else:
+                    ans = ans_list[ans_idx]
+                    ans_idx += 1
                 answers.append(ans)
-            com['company_name'] = c.company_name
-            com['company_id'] = c.id
-            com['answers'] = answers
-            companies.append(com)
+            com = {
+                'company_name': c.company_name,
+                'company_id': c.id,
+                'answers': answers[:13]
+            }
+            companies_q1.append(com)
+            if q2:
+                com = {
+                    'company_name': c.company_name,
+                    'company_id': c.id,
+                    'answers': answers[13:]
+                }
+                companies_q2.append(com)
         cat = {
-            'display_name': category[1].split('|')[0],
-            'questions': questions,
-            'companies': companies,
+            'display_name': category[1].split('|')[0] + ' 1',
+            'id': category[0],
+            'questions': questions[:13],
+            'companies': companies_q1,
         }
         categories.append(cat)
+        if q2:
+            cat = {
+                'display_name': category[1].split('|')[0] + ' 2',
+                'id': category[0],
+                'questions': questions[13:],
+                'companies': companies_q2,
+            }
+            categories.append(cat)
 
     return render_to_response('qa_list.html', {
         'categories': categories,

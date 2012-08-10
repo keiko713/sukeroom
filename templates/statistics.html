@@ -9,9 +9,9 @@
   <div class="row">
     <div class="span3">
       <ul>
-        <li class="selected" id="graph1">回答率トップ10 (会社別)</li>
-        <li id="graph2">回答率トップ10 (質問別)</li>
-        <li id="graph3">質問別回答円グラフ</li>
+        <li class="selected" id="graph1">質問別回答円グラフ<i class="icon-chevron-right icon-white"></i></li>
+        <li id="graph2">回答率トップ10 (会社別)<i class="icon-chevron-right"></i></li>
+        <li id="graph3">回答率トップ10 (質問別)<i class="icon-chevron-right"></i></li>
       </ul>
     </div>
     <div class="span9">
@@ -51,6 +51,13 @@
     $('#graph1').click(function() {
       $('li').removeClass('selected');
       $(this).addClass('selected');
+      $('.choice-field').show();
+      $('.statistics-header h4').html('質問別回答円グラフ');
+      getAndDrawPieData(1);
+    });
+    $('#graph2').click(function() {
+      $('li').removeClass('selected');
+      $(this).addClass('selected');
       $('.choice-field').hide();
       $('.statistics-header h4').html('回答率トップ10 (会社別)');
       var data = [];
@@ -61,7 +68,7 @@
       {% endfor %}
       basic_horizontal_bars(data, ylabels, container);
     });
-    $('#graph2').click(function() {
+    $('#graph3').click(function() {
       $('li').removeClass('selected');
       $(this).addClass('selected');
       $('.choice-field').hide();
@@ -73,13 +80,6 @@
       ylabels.push([{{ forloop.counter0 }}, "{{ obj.category }}: {{ obj.sentence }}</a>"]);
       {% endfor %}
       basic_horizontal_bars(data, ylabels, container);
-    });
-    $('#graph3').click(function() {
-      $('li').removeClass('selected');
-      $(this).addClass('selected');
-      $('.choice-field').show();
-      $('.statistics-header h4').html('質問別回答円グラフ');
-      getAndDrawPieData(1);
     });
     $('#selectCategory').change(function() {
       var selectCategory = $('#selectCategory').val();

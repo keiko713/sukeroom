@@ -57,15 +57,23 @@ body {
 }
 
 /*-- qa list --*/
-.qa-list .caption {
-  background-color: #7EBA03;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: 5px;
+.nav-tabs a {
+  color: #EEE;
 }
-.qa-table-scroll {
-  height: 300px;
-  overflow: auto;
+.nav-tabs > li > a:hover {
+  color: #333;
+}
+.qa-table th {
+  font-size: 9px;
+}
+.qa-table a {
+  color: #eee;
+}
+.qa-table tbody tr:nth-child(odd) td {
+  background-color: #777;
+}
+.qa-table tbody tr:hover td {
+  background-color: #999;
 }
 
 /*-- statistics --*/
@@ -80,9 +88,17 @@ body {
   padding: 15px;
   border-bottom: 1px solid #ddd;
   cursor: pointer;
+  position: relative;
+}
+.statistics li:hover {
+  background-color: #555;
 }
 .statistics li:nth-child(1) {
   border-top: 1px solid #ddd;
+}
+.statistics i {
+  position: absolute;
+  right: 10px;
 }
 #graphcanvas {
   min-height: 400px;

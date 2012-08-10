@@ -5,37 +5,47 @@
 
 {% block container %}
 <!-- main container -->
-<div class="container search qa-list">
-  {% for obj in categories %}
-  <div class="caption">{{ obj.display_name }}</div>
-  <div class="qa-table-scroll">
-  <table class="table table-striped search-table">
-    <thead>
-      <tr>
-        <th></th>
-        {% for q in obj.questions %}
-        <th>{{ q.question_sentence }}</th>
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for company in obj.companies %}
-      <tr>
-        <td><a href="/company/{{ company.company_id }}/">{{ company.company_name }}</a></td>
-        {% for ans in company.answers %}
-        <td>{{ ans.answer }}</a>
-        {% endfor %}
-      </tr>
+<div class="container qa-list">
+  <div class="tabbable">
+    <ul class="nav nav-tabs">
+      {% for obj in categories %}
+      <li{% if forloop.first %} class="active"{% endif %}>
+        <a href="#tab{{ forloop.counter }}" data-toggle="tab">{{ obj.display_name }}</a>
+      </li>
       {% endfor %}
-    </tbody>
-  </table>
-  </div>
-  {% endfor %}
-</div>
+    </ul>
+    <div class="tab-content">
+      {% for obj in categories %}
+      <div class="tab-pane{% if forloop.first %} active{% endif %}" id="tab{{ forloop.counter }}">
+        <table class="table table-striped qa-table">
+          <thead>
+            <tr>
+              <th></th>
+              {% for q in obj.questions %}
+              <th>{{ q.question_sentence }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for company in obj.companies %}
+            <tr>
+              <td><a href="/company/{{ company.company_id }}/">{{ company.company_name }}</a></td>
+              {% for ans in company.answers %}
+              <td>{{ ans.answer }}</a>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+  <div>
 <!-- /main container -->
 {% endblock container %}
 
 {% block custom_js %}
+<script src="{{ STATIC_URL }}js/bootstrap-tab.js"></script>
 <script>
   $(function() {
   });
