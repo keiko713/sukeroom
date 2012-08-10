@@ -16,6 +16,7 @@ ANSWER_TYPE_CHOICES = (
     (4, '必須/推奨/不要セレクトボックス'),
 )
 
+
 class Company(models.Model):
     company_name = models.CharField(max_length=100)
     company_url = models.CharField(max_length=200)
@@ -37,6 +38,7 @@ class Question(models.Model):
 
     def __unicode__(self):
         return u'%s' % (self.question_sentence)
+
 
 class Answer(models.Model):
     company = models.ForeignKey(Company)

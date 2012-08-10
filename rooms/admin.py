@@ -9,10 +9,12 @@ class CompanyAdmin(admin.ModelAdmin):
 
 admin.site.register(Company, CompanyAdmin)
 
+
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('question_sentence', 'category', 'answer_type')
 
 admin.site.register(Question, QuestionAdmin)
+
 
 class AnswerAdmin(admin.ModelAdmin):
     list_display = ('answer', 'additional_info', 'company', 'question')

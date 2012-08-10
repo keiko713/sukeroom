@@ -3,52 +3,62 @@
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseServerError
-from django.conf import settings
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q, Count
 from rooms.models import Company, Question, Answer
 from rooms.models import QUESTION_CATEGORY_CHOICES
-import json, traceback, sys
+import json
+import traceback
+import sys
 
 
+# making json response using data
 def json_response(data, code=200, mimetype='application/json'):
     resp = HttpResponse(data, mimetype)
     resp.status_code = code
     return resp
 
+
+# for the index page
 def index(request):
     return render_to_response('index.html', {
     }, context_instance=RequestContext(request))
 
+
+# for the page that shows all companies
 def companylist(request):
     companies = Company.objects.filter(deleted=False)
     return render_to_response('company_list.html', {
         'companies': companies,
     }, context_instance=RequestContext(request))
 
+
+# for the page that shows all questions and answers
 def qalist(request):
     cs = Company.objects.filter(deleted=False)
     categories = []
     for category in QUESTION_CATEGORY_CHOICES:
         # create a chunk of answers for each category
         cat = {}
-        questions = Question.objects.filter(category=category[0]).order_by('id')
+        questions = Question.objects.filter(
+            category=category[0]).order_by('id')
         # if there are more than 13 questions, separate question into 2
         q2 = True if len(questions) > 13 else False
         companies_q1 = []
         companies_q2 = []
         for c in cs:
             answers = []
-            ans_list = Answer.objects.filter(company=c, question__category=category[0]).order_by('question__id')
+            ans_list = Answer.objects.filter(
+                company=c, question__category=category[0]).order_by('question__id')
             ans_idx = 0
             for q in questions:
-                if ans_idx == len(ans_list) or not (q.id == ans_list[ans_idx].question.id):
-                    # if there is no answer, set 未(means 未回答) to answer
-                    ans = Answer(answer=u'未')
-                else:
+                if ans_idx < len(ans_list) and q.id == ans_list[ans_idx].question.id:
                     ans = ans_list[ans_idx]
                     ans_idx += 1
+                else:
+                    # if there is no answer, set 未(means 未回答) to answer
+                    ans = Answer(answer=u'未')
                 answers.append(ans)
             com = {
                 'company_name': c.company_name,
@@ -84,12 +94,15 @@ def qalist(request):
     }, context_instance=RequestContext(request))
 
 
+# function that get display name of categor from category_idy
 def get_category_display_name(category_id):
     for category in QUESTION_CATEGORY_CHOICES:
         if category[0] == category_id:
             return category[1].split('|')[0]
     return ''
 
+
+# for the page that shows statistics data
 def statistics(request):
     # graph1 response rate per company
     cs = Company.objects.filter(deleted=False)
@@ -97,7 +110,7 @@ def statistics(request):
     companies = {}
     for c in cs:
         ans_count = Answer.objects.filter(company=c).count()
-        persent = '%1.2f' % (float(ans_count)/ques_count)
+        persent = '%1.2f' % (float(ans_count) / ques_count)
         companies[persent] = c
     graph1 = []
     for k in sorted(companies.keys(), reverse=True):
@@ -113,7 +126,7 @@ def statistics(request):
     questions = {}
     for q in qs:
         ans_count = Answer.objects.filter(question=q).count()
-        persent = '%1.2f' % (float(ans_count)/comp_count)
+        persent = '%1.2f' % (float(ans_count) / comp_count)
         questions[persent] = q
     graph2 = []
     for k in sorted(questions.keys(), reverse=True):
@@ -137,10 +150,12 @@ def statistics(request):
     }, context_instance=RequestContext(request))
 
 
+# for ajax request of obtaining data to make pie chart
 def piedata(request, question_id):
     try:
         q = Question.objects.get(pk=question_id)
-        result = Answer.objects.filter(question=q).values("answer").annotate(Count("id")).order_by()
+        result = Answer.objects.filter(
+            question=q).values("answer").annotate(Count("id")).order_by()
         data = []
         for r in result:
             data.append({'answer': r['answer'], 'id': r['id__count']})
@@ -152,20 +167,25 @@ def piedata(request, question_id):
         return HttpResponseServerError(mimetype='application/json')
 
 
+# for GET request that searches companies by keyword
 def search(request):
     keyword = request.GET.get('keyword', '')
     companies = Company.objects.filter(
-        (Q(company_name__contains=keyword)|Q(company_url__contains=keyword)
-        |Q(company_description__contains=keyword))&Q(deleted=False))
+        (Q(company_name__contains=keyword) | Q(company_url__contains=keyword)
+        | Q(company_description__contains=keyword)) & Q(deleted=False))
     return render_to_response('search_result.html', {
         'keyword': keyword,
         'companies': companies,
     }, context_instance=RequestContext(request))
 
+
+# for the page to add new company
 def addcompany(request):
     return render_to_response('add_company.html', {
     }, context_instance=RequestContext(request))
 
+
+# for the page to edit company's information
 def editcompany(request, company_id):
     try:
         company = Company.objects.get(pk=company_id, deleted=False)
@@ -176,6 +196,8 @@ def editcompany(request, company_id):
         'company': company,
     }, context_instance=RequestContext(request))
 
+
+# for the page that shows company's information
 def company(request, company_id):
     try:
         company = Company.objects.get(pk=company_id, deleted=False)
@@ -232,6 +254,8 @@ def company(request, company_id):
         'result': result
     }, context_instance=RequestContext(request))
 
+
+# for ajax request of editing answers
 @csrf_exempt
 def answer_edit(request):
     change_nodes = request.POST.get('change_nodes', False)
@@ -287,6 +311,7 @@ def answer_edit(request):
         return HttpResponseServerError(mimetype='application/json')
 
 
+# for ajax request of adding new question
 @csrf_exempt
 def question_add(request):
     category = request.POST.get('category', False)
@@ -305,6 +330,8 @@ def question_add(request):
     except Exception:
         return HttpResponseServerError(mimetype='application/json')
 
+
+# for ajax request of adding new company
 @csrf_exempt
 def company_add(request):
     company_name = request.POST.get('company_name', False)
@@ -325,6 +352,8 @@ def company_add(request):
     except Exception:
         return HttpResponseServerError(minetype='application/json')
 
+
+# for ajax request of editing company information
 @csrf_exempt
 def company_edit(request):
     company_id = request.POST.get('company_id', False)
@@ -336,10 +365,10 @@ def company_edit(request):
         return HttpResponseBadRequest(minetype='application/json')
     try:
         company = Company.objects.get(pk=company_id, deleted=False)
-        company.company_name=company_name
-        company.company_url=company_url
-        company.company_image_url=company_image_url
-        company.company_description=company_description
+        company.company_name = company_name
+        company.company_url = company_url
+        company.company_image_url = company_image_url
+        company.company_description = company_description
         company.save()
         data = json.dumps({})
         return json_response(data)
