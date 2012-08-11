@@ -6,6 +6,7 @@ from django.http import HttpResponseBadRequest, HttpResponseServerError
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q, Count
+from django.views.decorators.cache import never_cache
 from rooms.models import Company, Question, Answer
 from rooms.models import QUESTION_CATEGORY_CHOICES
 import json
@@ -62,7 +63,7 @@ def qalist(request):
                 answers.append(ans)
             com = {
                 'company_name': c.company_name,
-                'company_id': c.id,
+                'company_url': c.get_absolute_url(),
                 'answers': answers[:13]
             }
             companies_q1.append(com)
@@ -117,7 +118,7 @@ def statistics(request):
         graph1.append({
             'persent': k,
             'name': companies[k].company_name,
-            'id': companies[k].id
+            'url': companies[k].get_absolute_url()
         })
 
     # graph2 response rate per answer
@@ -151,6 +152,7 @@ def statistics(request):
 
 
 # for ajax request of obtaining data to make pie chart
+@never_cache
 def piedata(request, question_id):
     try:
         q = Question.objects.get(pk=question_id)
@@ -168,6 +170,7 @@ def piedata(request, question_id):
 
 
 # for GET request that searches companies by keyword
+@never_cache
 def search(request):
     keyword = request.GET.get('keyword', '')
     companies = Company.objects.filter(
@@ -308,6 +311,9 @@ def answer_edit(request):
         data = json.dumps({})
         return json_response(data)
     except Exception:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print repr(traceback.format_exception(
+            exc_type, exc_value, exc_traceback))
         return HttpResponseServerError(mimetype='application/json')
 
 
@@ -328,6 +334,9 @@ def question_add(request):
         data = json.dumps({})
         return json_response(data)
     except Exception:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print repr(traceback.format_exception(
+            exc_type, exc_value, exc_traceback))
         return HttpResponseServerError(mimetype='application/json')
 
 
@@ -350,6 +359,9 @@ def company_add(request):
         data = json.dumps({})
         return json_response(data)
     except Exception:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print repr(traceback.format_exception(
+            exc_type, exc_value, exc_traceback))
         return HttpResponseServerError(minetype='application/json')
 
 
@@ -375,4 +387,7 @@ def company_edit(request):
     except Company.DoesNotExist:
         return HttpResponseBadRequest(minetype='application/json')
     except Exception:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print repr(traceback.format_exception(
+            exc_type, exc_value, exc_traceback))
         return HttpResponseServerError(minetype='application/json')

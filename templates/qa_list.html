@@ -29,7 +29,7 @@
           <tbody>
             {% for company in obj.companies %}
             <tr>
-              <td><a href="/company/{{ company.company_id }}/">{{ company.company_name }}</a></td>
+              <td><a href="{{ company.company_url }}">{{ company.company_name }}</a></td>
               {% for ans in company.answers %}
               <td>{{ ans.answer }}</a>
               {% endfor %}

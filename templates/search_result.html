@@ -21,7 +21,7 @@
     <tbody>
       {% for company in companies %}
       <tr>
-        <td><a href="/company/{{ company.id }}/">{{ company.company_name }}</a>
+        <td><a href="{{ company.get_absolute_url }}">{{ company.company_name }}</a>
         <td><a href="{{ company.company_url }}" target="blank">{{ company.company_url }} <i class="icon-share icon-white"></i></a></td>
         <td>{{ company.company_description }}</td>
       </tr>

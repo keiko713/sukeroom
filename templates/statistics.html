@@ -64,7 +64,7 @@
       var ylabels = [];
       {% for obj in graph1 reversed %}
       data.push([{{ obj.persent }} * 100, {{ forloop.counter0 }}]);
-      ylabels.push([{{ forloop.counter0 }}, "<a href='/company/{{ obj.id }}/'>{{ obj.name }}</a>"]);
+      ylabels.push([{{ forloop.counter0 }}, "<a href='{{ obj.url }}'>{{ obj.name }}</a>"]);
       {% endfor %}
       basic_horizontal_bars(data, ylabels, container);
     });
