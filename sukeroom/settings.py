@@ -1,5 +1,7 @@
 # Django settings for sukeroom project.
 import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'rooms').replace('\\','/'))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
