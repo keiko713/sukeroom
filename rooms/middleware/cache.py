@@ -32,7 +32,6 @@ class MyFetchFromCacheMiddleware(FetchFromCacheMiddleware):
 
         # try and get the cached GET response
         cache_key = get_cache_key(request, self.key_prefix, 'GET', cache=self.cache)
-        print cache_key
         if cache_key is None:
             request._cache_update_cache = True
             return None # No cache information available, need to rebuild.
