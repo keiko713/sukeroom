@@ -30,6 +30,9 @@ body {
 .navbar .nav .active > a, .navbar .nav .active > a:hover {
   background-image: url('../img/navbg_selected.png');
 }
+.navbar-fixed-bottom a {
+  color: #FFF;
+}
 @media (max-width: 979px) {
   .navbar-fixed-top .navbar-inner, .navbar-fixed-bottom .navbar-inner {
     padding: 0px;
@@ -83,6 +86,15 @@ body {
   font-family: 'Quando',"Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 18px;
   text-align: center;
+}
+.social-button {
+  text-align: center;
+  border-top: 1px dashed;
+  padding-top: 10px;
+  margin-top: 30px;
+}
+.social-button iframe {
+  margin-bottom: -7px;
 }
 
 /*-- qa list --*/

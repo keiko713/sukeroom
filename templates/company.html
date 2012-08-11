@@ -14,7 +14,7 @@
     </div>
     <div class="span4">
       <h2><a href="/company/{{ result.company.id }}/">{{ result.company.company_name }}</a><a href="/editcompany/{{ result.company.id }}/" rel="tooltip" title="会社情報を編集"><img src="{{ STATIC_URL }}img/icons/pencil.png" class="company-edit"></a></h3>
-      <h4><a href="{{ result.company.company_url }}" target="blank">{{ result.company.company_url }} <i class="icon-share icon-white"></i></a></h4>
+      <h4><a href="{{ result.company.company_url }}" target="_blank">{{ result.company.company_url }} <i class="icon-share icon-white"></i></a></h4>
       <p>{{ result.company.company_description }}</p>
       <input type="hidden" value="{{ result.company.id }}" id="cid">
     </div>

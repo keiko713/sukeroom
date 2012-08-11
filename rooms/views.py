@@ -74,7 +74,7 @@ def qalist(request):
                 }
                 companies_q2.append(com)
         cat = {
-            'display_name': category[1].split('|')[0] + ' 1',
+            'display_name': category[1].split('|')[0] + (' 1' if q2 else ''),
             'id': category[0],
             'questions': questions[:13],
             'companies': companies_q1,
