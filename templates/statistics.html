@@ -51,6 +51,8 @@
     $('#graph1').click(function() {
       $('li').removeClass('selected');
       $(this).addClass('selected');
+      $('li').find('i').removeClass('icon-white');
+      $(this).find('i').addClass('icon-white');
       $('.choice-field').show();
       $('.statistics-header h4').html('質問別回答円グラフ');
       getAndDrawPieData(1);
@@ -58,6 +60,8 @@
     $('#graph2').click(function() {
       $('li').removeClass('selected');
       $(this).addClass('selected');
+      $('li').find('i').removeClass('icon-white');
+      $(this).find('i').addClass('icon-white');
       $('.choice-field').hide();
       $('.statistics-header h4').html('回答率トップ10 (会社別)');
       var data = [];
@@ -71,13 +75,15 @@
     $('#graph3').click(function() {
       $('li').removeClass('selected');
       $(this).addClass('selected');
+      $('li').find('i').removeClass('icon-white');
+      $(this).find('i').addClass('icon-white');
       $('.choice-field').hide();
       $('.statistics-header h4').html('回答率トップ10 (質問別)');
       var data = [];
       var ylabels = [];
       {% for obj in graph2 reversed %}
       data.push([{{ obj.persent }} * 100, {{ forloop.counter0 }}]);
-      ylabels.push([{{ forloop.counter0 }}, "{{ obj.category }}: {{ obj.sentence }}</a>"]);
+      ylabels.push([{{ forloop.counter0 }}, "{{ obj.category }}: {{ obj.sentence }}"]);
       {% endfor %}
       basic_horizontal_bars(data, ylabels, container);
     });

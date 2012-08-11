@@ -110,6 +110,9 @@ body {
 .qa-table a {
   color: #eee;
 }
+.qa-table thead {
+  background-color: #222;
+}
 .qa-table tbody tr:nth-child(odd) td {
   background-color: #777;
 }

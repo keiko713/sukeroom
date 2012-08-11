@@ -36,6 +36,14 @@
             </tr>
             {% endfor %}
           </tbody>
+          <thead>
+            <tr>
+              <th></th>
+              {% for q in obj.questions %}
+              <th>{{ q.question_sentence }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
         </table>
       </div>
       {% endfor %}
