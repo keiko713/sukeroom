@@ -18,21 +18,25 @@
       <div class="statistics-header">
         <h4>グラフタイトル</h4>
         <div class="choice-field form-inline hide">
-          <label>カテゴリー:</label>
-          <select id="selectCategory">
-            <option value="1">メール・通信</option>
-            <option value="3">社内システム</option>
-            <option value="2">Web閲覧・ソフトウェア規制</option>
-            <option value="4">働く環境</option>
-          </select>
-          <label>質問:</label>
-          {% for key, val in question_list.items %}
-          <select id="selectQuestion{{ key }}" class="selectQuestion{% if key != 1 %} hide{% endif %}">
-            {% for question in val %}
-            <option value="{{ question.id }}">{{ question.question_sentence }}</option>
+          <span class="select-field">
+            <label>カテゴリー:</label>
+            <select id="selectCategory">
+              <option value="1">メール・通信</option>
+              <option value="3">社内システム</option>
+              <option value="2">Web閲覧・ソフトウェア規制</option>
+              <option value="4">働く環境</option>
+            </select>
+          </span>
+          <span class="select-field">
+            <label>質問:</label>
+            {% for key, val in question_list.items %}
+            <select id="selectQuestion{{ key }}" class="selectQuestion{% if key != 1 %} hide{% endif %}">
+              {% for question in val %}
+              <option value="{{ question.id }}">{{ question.question_sentence }}</option>
+              {% endfor %}
+            </select>
             {% endfor %}
-          </select>
-          {% endfor %}
+          </span>
         </div>
       </div>
       <div id="graphcanvas"></div>
