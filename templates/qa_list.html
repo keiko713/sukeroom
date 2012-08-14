@@ -17,12 +17,22 @@
     <div class="tab-content">
       {% for obj in categories %}
       <div class="tab-pane{% if forloop.first %} active{% endif %}" id="tab{{ forloop.counter }}">
+        <table class="table qa-table qa-table-head-only">
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              {% for q in obj.questions %}
+              <th><a href="#" rel="tooltipt" title="{{ q.question_sentence }}">{{ q.question_sentence }}</a></th>
+              {% endfor %}
+            </tr>
+          </thead>
+        </table>
         <table class="table table-striped qa-table">
           <thead>
             <tr>
-              <th></th>
+              <th>&nbsp;</th>
               {% for q in obj.questions %}
-              <th>{{ q.question_sentence }}</th>
+              <th><a href="#" rel="tooltip" title="{{ q.question_sentence }}">{{ q.question_sentence }}</a></th>
               {% endfor %}
             </tr>
           </thead>
@@ -38,9 +48,9 @@
           </tbody>
           <thead>
             <tr>
-              <th></th>
+              <th>&nbsp;</th>
               {% for q in obj.questions %}
-              <th>{{ q.question_sentence }}</th>
+              <th><a href="#" rel="tooltip" title="{{ q.question_sentence }}">{{ q.question_sentence }}</a></th>
               {% endfor %}
             </tr>
           </thead>
@@ -48,14 +58,29 @@
       </div>
       {% endfor %}
     </div>
-  <div>
+  </div>
+</div>
 <!-- /main container -->
 {% endblock container %}
 
 {% block custom_js %}
 <script src="{{ STATIC_URL }}js/bootstrap-tab.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-tooltip.js"></script>
 <script>
   $(function() {
+    /* activate tooltip */
+    $('a[rel=tooltip]').tooltip();
+    $('a[rel=tooltipt]').tooltip({placement: 'bottom'});
+    /* for table title */
+    $(window).scroll(function() {
+      if ($(window).width() > 979) {
+        if ($(window).scrollTop() > 80) {
+          $('.qa-table-head-only').show();
+        } else {
+          $('.qa-table-head-only').hide();
+        }
+      }
+    });
   });
 </script>
 {% endblock custom_js %}

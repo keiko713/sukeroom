@@ -178,8 +178,18 @@ body {
 .nav-tabs > li > a:hover {
   color: #333;
 }
+.qa-table {
+  table-layout: fixed;
+}
 .qa-table th {
   font-size: 9px;
+  width: 49px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.qa-table th:first-child {
+  width: 79px;
 }
 .qa-table a {
   color: #eee;
@@ -192,6 +202,29 @@ body {
 }
 .qa-table tbody tr:hover td {
   background-color: #999;
+}
+.qa-table-head-only {
+  display: none;
+  position: fixed;
+  top: 50px;
+  z-index: 2000;
+  width: 940px;
+}
+@media (min-width: 1200px) {
+  .qa-table-head-only {
+    width: 1170px;
+  }
+  .qa-table th {
+    width: 64px;
+  }
+  .qa-table th:first-child {
+    width: 114px;
+  }
+}
+@media (max-width: 979px) {
+  .qa-table th {
+    width: 80px;
+  }
 }
 
 /*-- statistics --*/
