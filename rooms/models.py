@@ -43,8 +43,9 @@ class Company(models.Model):
         if not updated:
             updated = {}
         updated['/companylist/'] = True
-        updated[self.get_absolute_url()] = True
-        updated['/editcompany/%i/' % self.id] = True
+        if self.id:
+            updated[self.get_absolute_url()] = True
+            updated['/editcompany/%i/' % self.id] = True
         updated['/qalist/'] = True
         updated['/statistics/'] = True
         cache.set('updated', updated)
