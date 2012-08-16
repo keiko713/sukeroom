@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}{{ question.question_sentence }} | {% endblock title %}
+
+{% block container %}
+<!-- main container -->
+<div class="container question">
+  <div class="row">
+    <div class="span3 question-header">
+      <h2>{{ question.question_sentence }}</h2>
+      <p class="pull-left">
+        <a href="https://twitter.com/share" class="twitter-share-button" data-via="SukeRoom" data-hashtags="SukeRoom">Tweet</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+      </p>
+      <p class="pull-right">回答数 {{ answers|length }} 社</p>
+      <div class="clear"></div>
+      <p>他の質問へジャンプ</p>
+      <div class="choice-field">
+        <span class="select-field">
+          <label>カテゴリー:</label>
+          <select id="selectCategory">
+            <option value="1"{% if question.category == 1 %} selected{% endif %}>メール・通信</option>
+            <option value="3"{% if question.category == 3 %} selected{% endif %}>社内システム</option>
+            <option value="2"{% if question.category == 2 %} selected{% endif %}>Web閲覧・ソフトウェア規制</option>
+            <option value="4"{% if question.category == 4 %} selected{% endif %}>働く環境</option>
+          </select>
+        </span>
+        <span class="select-field">
+          <label>質問:</label>
+          {% for key, val in question_list.items %}
+          <select id="selectQuestion{{ key }}" class="selectQuestion hide">
+            {% for question in val %}
+            <option value="{{ question.id }}">{{ question.question_sentence }}</option>
+            {% endfor %}
+          </select>
+          {% endfor %}
+        </span>
+        <div class="clear"></div>
+      </div>
+    </div>
+    <div class="span9">
+      <div id="graphcanvas"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span12">
+      <table class="table table-striped search-table answer-table">
+        <thead>
+          <tr>
+            <th>会社名</th>
+            <th>回答</th>
+            <th>補足</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for answer in answers %}
+          <tr>
+            <td><a href="{{ answer.company.get_absolute_url }}">{{ answer.company.company_name }}</a>
+            <td>{{ answer.answer }}</td>
+            <td>{{ answer.additional_info }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- /main container -->
+{% endblock container %}
+
+{% block custom_js %}
+<script src="{{ STATIC_URL }}js/flotr2.min.js"></script>
+<script src="{{ STATIC_URL }}js/question.js"></script>
+<script>
+  $(function() {
+    // showing current page's selection
+    var selectCategoryId = $('#selectCategory').val();
+    var selectQuestionId = '#selectQuestion' + selectCategoryId;
+    $(selectQuestionId).val({{ question.id }});
+    $(selectQuestionId).show();
+    // when the select box changed, redirect to target page
+    $('#selectCategory').change(function() {
+      var selectCategoryId = $('#selectCategory').val();
+      var selectQuestionId = '#selectQuestion' + selectCategoryId;
+      var qid = $(selectQuestionId).val();
+      location.href = "/question/" + qid + "/";
+    });
+    $('.selectQuestion').change(function() {
+      var qid = $(this).val();
+      location.href = "/question/" + qid + "/";
+    });
+    // draw the graph
+    var container = document.getElementById('graphcanvas');
+    getAndDrawPieData({{ question.id }});
+  });
+  function getAndDrawPieData(questionId) {
+    $.ajax({
+      url: "/api/piedata/" + questionId + "/",
+      dataType: "json",
+      type: "GET",
+    }).done(function(data) {
+      var pieData = [];
+      for (var key in data) {
+        pieData.push({data: [[0, data[key].id]], label: data[key].answer});
+      }
+      basic_pie(pieData, document.getElementById('graphcanvas'));
+    }).fail(function() {
+      alert('グラフデータの取得中にサーバー側でエラーが発生しました。しばらくしてからもう一度試してください。');
+    });
+  }
+</script>
+{% endblock custom_js %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}質問一覧 | {% endblock title %}
+{% block questionlist-active %}active{% endblock questionlist-active %}
+
+{% block container %}
+<!-- main container -->
+<div class="container">
+  <div class="row">
+    <div class="span3">
+      <ul class="question-cat-list">
+        <li cat-id="1">メール・通信<i class="icon-chevron-right"></i></li>
+        <li cat-id="3">社内システム<i class="icon-chevron-right"></i></li>
+        <li cat-id="2">Web閲覧・ソフトウェア規制<i class="icon-chevron-right"></i></li>
+        <li cat-id="4">働く環境<i class="icon-chevron-right"></i></li>
+      </ul>
+    </div>
+    <div class="span9">
+      {% for key, val in question_list.items %}
+      <table class="table table-striped search-table question-table hide" id="selectQuestion{{ key }}">
+        <tbody>
+          {% for question in val %}
+          <tr>
+            <td><a href="/question/{{ question.id }}/">{{ question.question_sentence }} <i class="icon-chevron-right icon-white"></i></a></td>
+            <td>
+              <span rel="tooltip" title="回答率 {{ question.answer_rate }}%">
+              <div class="progress">
+                <div class="bar" style="width: {{ question.answer_rate }}%"></div>
+              </div>
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<!-- /main container -->
+{% endblock container %}
+
+{% block custom_js %}
+<script src="{{ STATIC_URL }}js/bootstrap-tooltip.js"></script>
+<script>
+  $(function() {
+    $('span[rel=tooltip]').tooltip();
+    $('li').click(function() {
+      // select category
+      $('li').removeClass('selected');
+      $(this).addClass('selected');
+      $('li').find('i').removeClass('icon-white');
+      $(this).find('i').addClass('icon-white');
+      // show selected category table
+      var questionTableId = "#selectQuestion" + $(this).attr('cat-id');
+      $('.question-table').hide();
+      $(questionTableId).show();
+    });
+  });
+</script>
+{% endblock custom_js %}

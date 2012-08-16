@@ -42,12 +42,12 @@ class Company(models.Model):
         updated = cache.get('updated')
         if not updated:
             updated = {}
-        updated['/companylist/'] = True
+        updated['/question/'] = True
+        updated['/ranking/'] = True
+        updated['/qalist/'] = True
         if self.id:
             updated[self.get_absolute_url()] = True
             updated['/editcompany/%i/' % self.id] = True
-        updated['/qalist/'] = True
-        updated['/statistics/'] = True
         cache.set('updated', updated)
         super(Company, self).save()
 
@@ -64,8 +64,9 @@ class Question(models.Model):
         updated = cache.get('updated')
         if not updated:
             updated = {}
+        updated['/question/'] = True
+        updated['/ranking/'] = True
         updated['/qalist/'] = True
-        updated['/statistics/'] = True
         cache.set('updated', updated)
         super(Question, self).save()
 
@@ -85,7 +86,8 @@ class Answer(models.Model):
         if not updated:
             updated = {}
         updated[self.company.get_absolute_url()] = True
+        updated['/question/'] = True
+        updated['/ranking/'] = True
         updated['/qalist/'] = True
-        updated['/statistics/'] = True
         cache.set('updated', updated)
         super(Answer, self).save()

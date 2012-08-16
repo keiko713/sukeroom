@@ -171,6 +171,83 @@ body {
   }
 }
 
+/*-- quesiton list --*/
+.question-cat-list {
+  list-style-type: none;
+  margin: 0 0 20px 0;
+}
+.question-cat-list .selected {
+  background-color: #777;
+}
+.question-cat-list li {
+  line-height: 1;
+  padding: 15px 30px 15px 15px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  position: relative;
+}
+.question-cat-list li:hover {
+  background-color: #555;
+}
+.question-cat-list li:nth-child(1) {
+  border-top: 1px solid #ddd;
+}
+.question-cat-list i {
+  position: absolute;
+  right: 10px;
+}
+.question-table td:last-child {
+  width: 20%;
+}
+.progress {
+  margin-bottom: 0px;
+}
+
+/*-- question --*/
+.question .row {
+  margin-bottom: 20px;
+}
+.question-header h2{
+  background-color: #7EBA03;
+  font-weight: normal;
+  text-shadow: 0 1px 3px #222;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+.answer-table {
+  table-layout: fixed;
+}
+.answer-table th {
+  width: 30%;
+}
+.answer-table th:last-child {
+  width: 40%;
+}
+.clear {
+  clear: both;
+}
+.choice-field {
+  margin-bottom: 20px;
+}
+@media (max-width: 979px) {
+  .question [class*="span"] {
+    display: block;
+    float: none;
+    width: auto;
+    margin-left: 0;
+  }
+  .select-field {
+    float: left;
+    width: 50%;
+  }
+}
+@media (max-width: 480px) {
+  .select-field {
+    float: none;
+    width: 100%
+  }
+}
+
 /*-- qa list --*/
 .nav-tabs a {
   color: #EEE;
@@ -227,62 +304,25 @@ body {
   }
 }
 
-/*-- statistics --*/
-.statistics ul {
-  list-style-type: none;
-  margin: 0 0 20px 0;
-}
-.statistics li.selected {
-  background-color: #777;
-}
-.statistics li {
-  line-height: 1;
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
-  cursor: pointer;
-  position: relative;
-}
-.statistics li:hover {
-  background-color: #555;
-}
-.statistics li:nth-child(1) {
-  border-top: 1px solid #ddd;
-}
-.statistics i {
-  position: absolute;
-  right: 10px;
-}
+/*-- ranking/question --*/
 #graphcanvas {
   min-height: 400px;
 }
 .flotr-labels a {
   color: #eee;
 }
-.statistics-header h4 {
+.ranking-header h4 {
   padding: 5px;
   margin-bottom: 10px;
   text-align: center;
   background-color: #777;
   opacity: 0.8;
 }
-.statistics-header {
+.ranking-header {
   margin-bottom: 15px;
 }
-.choice-field label {
-  padding-left: 15px;
-  padding-right: 15px;
-}
-@media (max-width: 979px) {
-  .select-field {
-    display: block;
-    padding-top: 5px;
-  }
-  .select-field label {
-    width: 70px;
-  }
-}
 @media (max-width: 480px) {
-  .statistics {
+  .ranking {
     margin-bottom: 20px;
   }
 }

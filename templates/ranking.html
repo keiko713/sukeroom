@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}ランキング | {% endblock title %}
+{% block ranking-active %}active{% endblock ranking-active %}
+
+{% block container %}
+<!-- main container -->
+<div class="container ranking">
+  <div class="row">
+    <div class="span3">
+      <ul class="question-cat-list">
+        <li class="selected" id="graph1">回答率トップ10 (会社別)<i class="icon-chevron-right icon-white"></i></li>
+        <li id="graph2">回答率トップ10 (質問別)<i class="icon-chevron-right"></i></li>
+        <li>ランキングのお題募集中</i></li>
+      </ul>
+    </div>
+    <div class="span9">
+      <div class="ranking-header">
+        <h4>グラフタイトル</h4>
+      </div>
+      <div id="graphcanvas"></div>
+    </div>
+  </div>
+</div>
+<!-- /main container -->
+{% endblock container %}
+
+{% block custom_js %}
+<script src="{{ STATIC_URL }}js/flotr2.min.js"></script>
+<script src="{{ STATIC_URL }}js/ranking.js"></script>
+<script>
+  $(function() {
+    var container = document.getElementById('graphcanvas');
+    $('#graph1').click(function() {
+      $('li').removeClass('selected');
+      $(this).addClass('selected');
+      $('li').find('i').removeClass('icon-white');
+      $(this).find('i').addClass('icon-white');
+      $('.ranking-header h4').html('回答率トップ10 (会社別)');
+      var data = [];
+      var ylabels = [];
+      {% for obj in graph1 reversed %}
+      data.push([{{ obj.persent }} * 100, {{ forloop.counter0 }}]);
+      ylabels.push([{{ forloop.counter0 }}, "<a href='{{ obj.url }}'>{{ obj.name }}</a>"]);
+      {% endfor %}
+      basic_horizontal_bars(data, ylabels, container);
+    });
+    $('#graph2').click(function() {
+      $('li').removeClass('selected');
+      $(this).addClass('selected');
+      $('li').find('i').removeClass('icon-white');
+      $(this).find('i').addClass('icon-white');
+      $('.ranking-header h4').html('回答率トップ10 (質問別)');
+      var data = [];
+      var ylabels = [];
+      {% for obj in graph2 reversed %}
+      data.push([{{ obj.persent }} * 100, {{ forloop.counter0 }}]);
+      ylabels.push([{{ forloop.counter0 }}, "{{ obj.category }}: {{ obj.sentence }}"]);
+      {% endfor %}
+      basic_horizontal_bars(data, ylabels, container);
+    });
+    $('#graph1').click();
+  });
+</script>
+{% endblock custom_js %}

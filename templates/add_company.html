@@ -86,11 +86,8 @@
             company_image_url: companyImg,
             company_description: companyDesc
           },
-        }).done(function() {
-          resetForm();
-          $('#message-text').html('正常に追加されました。');
-          $('#message').addClass('alert-info');
-          $('#message').show();
+        }).done(function(data) {
+          location.href = data.company_page_url;
         }).fail(function() {
           $('#message-text').html('サーバー側でエラーが発生しました。しばらくしてからもう一度試してください。');
           $('#message').removeClass('alert-info');

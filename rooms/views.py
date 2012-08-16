@@ -9,6 +9,7 @@ from django.db.models import Q, Count
 from django.views.decorators.cache import never_cache
 from rooms.models import Company, Question, Answer
 from rooms.models import QUESTION_CATEGORY_CHOICES
+from rooms.models import ANSWER_TYPE_CHOICES
 import json
 import traceback
 import sys
@@ -28,10 +29,34 @@ def index(request):
 
 
 # for the page that shows all companies
+@never_cache
 def companylist(request):
     companies = Company.objects.filter(deleted=False)
     return render_to_response('company_list.html', {
         'companies': companies,
+    }, context_instance=RequestContext(request))
+
+
+# for the page that shows all questions
+@never_cache
+def questionlist(request):
+    qs = Question.objects.all()
+    comp_count = Company.objects.filter(deleted=False).count()
+    question_list = {}
+    for q in qs:
+        ans_count = Answer.objects.filter(question=q).count()
+        answer_rate = '%3d' % ((float(ans_count) / comp_count) * 100)
+        question = {
+            'id': q.id,
+            'question_sentence': q.question_sentence,
+            'answer_rate': answer_rate,
+        }
+        if not question_list.get(q.category):
+            question_list[q.category] = []
+        question_list[q.category].append(question)
+
+    return render_to_response('question_list.html', {
+        'question_list': question_list,
     }, context_instance=RequestContext(request))
 
 
@@ -95,7 +120,7 @@ def qalist(request):
     }, context_instance=RequestContext(request))
 
 
-# function that get display name of categor from category_idy
+# function that get display name of category from category_id
 def get_category_display_name(category_id):
     for category in QUESTION_CATEGORY_CHOICES:
         if category[0] == category_id:
@@ -103,8 +128,16 @@ def get_category_display_name(category_id):
     return ''
 
 
-# for the page that shows statistics data
-def statistics(request):
+# function that get display name of answer_type from answer_type_id
+def get_answer_type_display_name(answer_type_id):
+    for answer_type in ANSWER_TYPE_CHOICES:
+        if answer_type[0] == answer_type_id:
+            return answer_type[1]
+    return ''
+
+
+# for the page that shows ranking data
+def ranking(request):
     # graph1 response rate per company
     cs = Company.objects.filter(deleted=False)
     ques_count = Question.objects.all().count()
@@ -137,17 +170,15 @@ def statistics(request):
             'sentence': questions[k].question_sentence,
         })
 
-    # generate categorised question
-    question_list = {}
-    for q in qs:
-        if not question_list.get(q.category):
-            question_list[q.category] = []
-        question_list[q.category].append(q)
-
-    return render_to_response('statistics.html', {
+    return render_to_response('ranking.html', {
         'graph1': graph1[:10],
         'graph2': graph2[:10],
-        'question_list': question_list,
+    }, context_instance=RequestContext(request))
+
+
+# obsoleted page
+def statistics(request):
+    return render_to_response('statistics.html', {
     }, context_instance=RequestContext(request))
 
 
@@ -258,6 +289,31 @@ def company(request, company_id):
     }, context_instance=RequestContext(request))
 
 
+# for the page that shows answer's detail
+def question(request, question_id):
+    try:
+        question = Question.objects.get(pk=question_id)
+    except Question.DoesNotExist:
+        raise Http404
+
+    # get answers for this question
+    answers = Answer.objects.filter(question=question).order_by('answer')
+
+    # generate categorised question
+    qs = Question.objects.all()
+    question_list = {}
+    for q in qs:
+        if not question_list.get(q.category):
+            question_list[q.category] = []
+        question_list[q.category].append(q)
+
+    return render_to_response('question.html', {
+        'question': question,
+        'answers': answers,
+        'question_list': question_list,
+    }, context_instance=RequestContext(request))
+
+
 # for ajax request of editing answers
 @csrf_exempt
 def answer_edit(request):
@@ -356,7 +412,7 @@ def company_add(request):
             company_image_url=company_image_url,
             company_description=company_description)
         company.save()
-        data = json.dumps({})
+        data = json.dumps({'company_page_url': company.get_absolute_url()})
         return json_response(data)
     except Exception:
         exc_type, exc_value, exc_traceback = sys.exc_info()

@@ -1,45 +1,13 @@
 {% extends "base.html" %}
 
 {% block title %}統計 | {% endblock title %}
-{% block statistics-active %}active{% endblock statistics-active %}
 
 {% block container %}
 <!-- main container -->
-<div class="container statistics">
+<div class="container">
   <div class="row">
-    <div class="span3">
-      <ul>
-        <li class="selected" id="graph1">質問別回答円グラフ<i class="icon-chevron-right icon-white"></i></li>
-        <li id="graph2">回答率トップ10 (会社別)<i class="icon-chevron-right"></i></li>
-        <li id="graph3">回答率トップ10 (質問別)<i class="icon-chevron-right"></i></li>
-      </ul>
-    </div>
-    <div class="span9">
-      <div class="statistics-header">
-        <h4>グラフタイトル</h4>
-        <div class="choice-field form-inline hide">
-          <span class="select-field">
-            <label>カテゴリー:</label>
-            <select id="selectCategory">
-              <option value="1">メール・通信</option>
-              <option value="3">社内システム</option>
-              <option value="2">Web閲覧・ソフトウェア規制</option>
-              <option value="4">働く環境</option>
-            </select>
-          </span>
-          <span class="select-field">
-            <label>質問:</label>
-            {% for key, val in question_list.items %}
-            <select id="selectQuestion{{ key }}" class="selectQuestion{% if key != 1 %} hide{% endif %}">
-              {% for question in val %}
-              <option value="{{ question.id }}">{{ question.question_sentence }}</option>
-              {% endfor %}
-            </select>
-            {% endfor %}
-          </span>
-        </div>
-      </div>
-      <div id="graphcanvas"></div>
+    <div class="span12">
+      <p>このページは、質問一覧のページに移動しました。自動的に質問一覧のページに遷移します。遷移しない場合は<a href="/questionlist/">ここ</a>をクリックしてください。</p>
     </div>
   </div>
 </div>
@@ -47,80 +15,9 @@
 {% endblock container %}
 
 {% block custom_js %}
-<script src="{{ STATIC_URL }}js/flotr2.min.js"></script>
-<script src="{{ STATIC_URL }}js/statistics.js"></script>
 <script>
   $(function() {
-    var container = document.getElementById('graphcanvas');
-    $('#graph1').click(function() {
-      $('li').removeClass('selected');
-      $(this).addClass('selected');
-      $('li').find('i').removeClass('icon-white');
-      $(this).find('i').addClass('icon-white');
-      $('.choice-field').show();
-      $('.statistics-header h4').html('質問別回答円グラフ');
-      getAndDrawPieData(1);
-    });
-    $('#graph2').click(function() {
-      $('li').removeClass('selected');
-      $(this).addClass('selected');
-      $('li').find('i').removeClass('icon-white');
-      $(this).find('i').addClass('icon-white');
-      $('.choice-field').hide();
-      $('.statistics-header h4').html('回答率トップ10 (会社別)');
-      var data = [];
-      var ylabels = [];
-      {% for obj in graph1 reversed %}
-      data.push([{{ obj.persent }} * 100, {{ forloop.counter0 }}]);
-      ylabels.push([{{ forloop.counter0 }}, "<a href='{{ obj.url }}'>{{ obj.name }}</a>"]);
-      {% endfor %}
-      basic_horizontal_bars(data, ylabels, container);
-    });
-    $('#graph3').click(function() {
-      $('li').removeClass('selected');
-      $(this).addClass('selected');
-      $('li').find('i').removeClass('icon-white');
-      $(this).find('i').addClass('icon-white');
-      $('.choice-field').hide();
-      $('.statistics-header h4').html('回答率トップ10 (質問別)');
-      var data = [];
-      var ylabels = [];
-      {% for obj in graph2 reversed %}
-      data.push([{{ obj.persent }} * 100, {{ forloop.counter0 }}]);
-      ylabels.push([{{ forloop.counter0 }}, "{{ obj.category }}: {{ obj.sentence }}"]);
-      {% endfor %}
-      basic_horizontal_bars(data, ylabels, container);
-    });
-    $('#selectCategory').change(function() {
-      var selectCategory = $('#selectCategory').val();
-      var selectQuestionName = '#selectQuestion' + selectCategory;
-      $('.selectQuestion').hide();
-      $(selectQuestionName).show(function() {
-        var qid = $(this).val();
-        getAndDrawPieData(qid);
-      });
-    });
-    $('.selectQuestion').change(function() {
-      var qid = $(this).val();
-      getAndDrawPieData(qid);
-    });
-    $('#graph1').click();
+    location.href = '/questionlist/';
   });
-  function getAndDrawPieData(questionId) {
-    $.ajax({
-      url: "/api/piedata/" + questionId + "/",
-      dataType: "json",
-      type: "GET",
-    }).done(function(data) {
-      var pieData = [];
-      for (var key in data) {
-        pieData.push({data: [[0, data[key].id]], label: data[key].answer});
-      }
-      basic_pie(pieData, document.getElementById('graphcanvas'));
-    }).fail(function() {
-      alert('サーバー側でエラーが発生しました。しばらくしてからもう一度試してください。');
-    });
-  }
-
 </script>
 {% endblock custom_js %}
